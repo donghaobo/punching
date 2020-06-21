@@ -1,6 +1,7 @@
 package server
 
 import (
+	. "punching/constant"
 	"punching/logger"
 	"punching/util"
 	"time"
@@ -10,6 +11,7 @@ var (
 	Dch chan bool
 	Rch chan util.PairPackage
 	Wch chan []byte
+	Pch chan bool
 )
 
 func Main() {
@@ -64,9 +66,11 @@ func Main() {
 		Dch = make(chan bool)
 		Rch = make(chan util.PairPackage)
 		Wch = make(chan []byte)
+		Pch = make(chan bool)
 
 		go RHandler(connPeer) //Nat端写通道
 		go WHandler(connPeer) //Nat端读通道
+		go PHandler()         //ping 保活
 
 		// 转发到提供服务端口，并将服务端口数据转到Nat端
 		handleServerConn()
@@ -112,5 +116,25 @@ func WHandler(conn util.NetConn) {
 			}
 
 		}
+	}
+}
+
+func ping() {
+	pack := util.PackageNat(PAIR_CONTROL_PING, "0000", []byte(""))
+	Wch <- pack
+	timeout := time.NewTimer(time.Second * 10)
+	select {
+	case <-Pch:
+		return
+	case <-timeout.C:
+		logger.Errorf("ping超时")
+		Dch <- true
+	}
+}
+
+func PHandler() {
+	for {
+		go ping()
+		time.Sleep(25 * time.Second)
 	}
 }

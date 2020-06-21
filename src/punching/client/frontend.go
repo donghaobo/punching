@@ -132,7 +132,14 @@ func handleReadConn() {
 			data := pact.Data
 
 			//退出
-			if controlID == PAIR_CONTROL_QUIT {
+			if controlID == PAIR_CONTROL_PING {
+				logger.Info("收到ping信号")
+				pack := util.PackageNat(PAIR_CONTROL_PONG, sessionID, []byte(""))
+				Wch <- pack
+			} else if controlID == PAIR_CONTROL_PONG {
+				logger.Info("收到pong信号")
+				Pch <- true
+			} else if controlID == PAIR_CONTROL_QUIT {
 				if c, ok := ExitChanMap[sessionID]; ok {
 					logger.Info("发送退出信号")
 					c <- true

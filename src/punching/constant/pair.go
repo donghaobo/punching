@@ -5,6 +5,8 @@ package constant
 const (
 	PAIR_CONTROL_FIRST  byte = 11 // 控制码 C->S第一个包
 	PAIR_CONTROL_QUIT   byte = 10 // 控制码 退出
+	PAIR_CONTROL_PING   byte = 12 // 控制码 ping
+	PAIR_CONTROL_PONG   byte = 13 // 控制码 pong
 	PAIR_CONTROL_NORMAL byte = 0  // 控制码
 
 	PAIR_PACKAGE_HEAD_LENGTH      = 6  // C<->S 自定义包头长度

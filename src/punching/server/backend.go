@@ -32,6 +32,17 @@ func handleServerConn() {
 
 			//log.Println("读取Nat接收包：handleReadConn", string(r[0:34]), "长度为", len(r))
 
+			if controlID == PAIR_CONTROL_PING {
+				logger.Info("收到ping信号")
+				pongPack := util.PackageNat(PAIR_CONTROL_PONG, sessionID, []byte(""))
+				Wch <- pongPack
+				break
+			}
+			if controlID == PAIR_CONTROL_PONG {
+				logger.Info("收到pong信号")
+				Pch <- true
+				break
+			}
 			if controlID == PAIR_CONTROL_QUIT {
 
 				RWLock.RLock()

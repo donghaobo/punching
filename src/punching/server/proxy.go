@@ -45,7 +45,7 @@ func WaitForPeer(conn *util.NetConn) (localAddr string, remoteAddr string, err e
 			str := string(data)
 			parts := strings.Split(str, ",")
 			remoteAddr = parts[0]
-			localAddr  = parts[1]
+			localAddr = parts[1]
 			return
 		}
 	}
