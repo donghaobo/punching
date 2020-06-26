@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"time"
 
 	"errors"
 	"net"
@@ -30,6 +31,7 @@ func WaitForPeer(conn *util.NetConn) (localAddr string, remoteAddr string, err e
 
 	go RProxyHandler(conn)
 
+	timeout := time.NewTimer(time.Second * 60 * 5)
 	select {
 	case pack := <-ProxyDch:
 
@@ -48,6 +50,10 @@ func WaitForPeer(conn *util.NetConn) (localAddr string, remoteAddr string, err e
 			localAddr = parts[1]
 			return
 		}
+	case <-timeout.C:
+		logger.Error("等待client超时")
+		err = fmt.Errorf("等待client超时")
+		return
 	}
 
 	return
