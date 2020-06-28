@@ -2,7 +2,6 @@ package server
 
 import (
 	"net"
-	"os"
 	. "punching/constant"
 	"punching/logger"
 	"punching/util"
@@ -97,10 +96,6 @@ func handleServerConn() {
 
 			}
 
-		case <-Dch:
-			//出错
-			logger.Warn("收到退出信息")
-			os.Exit(1)
 		}
 	}
 }

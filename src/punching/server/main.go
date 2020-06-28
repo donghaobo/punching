@@ -1,6 +1,7 @@
 package server
 
 import (
+	"os"
 	. "punching/constant"
 	"punching/logger"
 	"punching/util"
@@ -73,12 +74,14 @@ func Main() {
 		go PHandler()         //ping 保活
 
 		// 转发到提供服务端口，并将服务端口数据转到Nat端
-		handleServerConn()
+		go handleServerConn()
 
 		// 如果P2P端通讯出错，退出
 		select {
 		case <-Dch:
-			continue
+			//出错
+			logger.Warn("收到退出信息")
+			os.Exit(1)
 		}
 	}
 
